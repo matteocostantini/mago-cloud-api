@@ -2,6 +2,10 @@
     <div *ngIf="!connection.current.jwtToken">
         <form>
             <div class="form-group col-4 mt-3">
+                <label for="rootURL">Connect to</label>
+                <input type="text" class="form-control" name="rootURL" id="rootURL" [(ngModel)]="connection.current.rootURL">
+            </div>        
+            <div class="form-group col-4 mt-3">
                 <label for="accountName">Account Name</label>
                 <input type="text" class="form-control" name="accountName" id="accountName" [(ngModel)]="connection.current.accountName">
             </div>        
