@@ -2,6 +2,8 @@ import { ContactsListComponent } from './contacts-list/contacts-list.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './login/login.component';
+import { MenuComponent } from './menu/menu.component';
+import { ItemsComponent } from './items/items.component';
 
 
 const routes: Routes = [
@@ -16,6 +18,14 @@ const routes: Routes = [
   {
     path: 'contacts-list',
     component: ContactsListComponent,
+  },
+  {
+    path: 'menu',
+    component: MenuComponent,
+  },
+  {
+    path: 'items',
+    component: ItemsComponent,
   }
 
 ];

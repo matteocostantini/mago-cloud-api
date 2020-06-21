@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
 
   onLogin() {
     this.connection.login().subscribe(() => {
-      this.router.navigate(['contacts-list'])
+      this.router.navigate(['menu']);
     });
   }
   onLogout() {
