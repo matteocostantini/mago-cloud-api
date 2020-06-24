@@ -1,9 +1,20 @@
-perchè la url finisce con "/code"?
-la parte della url "/be/" significa back-end? si può cambiare in "/api/"?
-perchè le API per il mobile hanno un altra URL per la login? meglio tenere tutto unificato
-le API di account-manager sono le stesse usabili anche dalle API di ERP, ESP, ecc.?
-come si può selezionare la query ("SelectionTypes") diversa dal default?
-come si possono indicare le colonne da tornare? dipende dal SelectionTypes?
-è pensabile di fare delle definizioni di ReferenceObjects nella custom? (immagino di no)
-esiste uno swagger per questi controllers?
-esistono dei WS per scaricare l'elenco dei referenceobjects?
+perchè la url finisce con "/code"? -> indica uno dei SelectionTypes, "code" è retrocompatibile con "default"
+la parte della url "/be/" significa back-end? si può cambiare in "/api/"? -> chiedere a devops
+perchè le API per il mobile hanno un altra URL per la login? meglio tenere tutto unificato -> solo per fase preliminare, non vincolante
+le API di account-manager sono le stesse usabili anche dalle API di ERP, ESP, ecc.? -> SI
+ma il jwt subscription token non scade mai? Che succede se faccio ripetutamente login? -> chiedere ad Ilaria. esiste isvalidtoken?
+come si può selezionare la query ("SelectionTypes") diversa dal default? -> ultima parte della URL
+come si possono indicare le colonne da tornare? dipende dal SelectionTypes? -> SI
+è pensabile di fare delle definizioni di ReferenceObjects nella custom? (immagino di no) -> forse prevedibile, chiedere a Bruna
+esiste uno swagger per questi controllers? -> si per il be dell'app KPI, in parte per il DS. Decisione sulla pubblicazione
+esistono dei WS per scaricare l'elenco dei referenceobjects? -> no
+
+
+
+
+
+query string? fatto inizialmente, meglio passare a body
+versioning? fatto solo per KPI, versioning nell'URL
+
+
+
