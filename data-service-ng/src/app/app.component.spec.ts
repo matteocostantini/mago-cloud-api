@@ -20,16 +20,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'data-service'`, () => {
+  it(`should have as title 'data-service-ng'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('data-service');
+    expect(app.title).toEqual('data-service-ng');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('data-service app is running!');
+    expect(compiled.querySelector('.content span').textContent).toContain('data-service-ng app is running!');
   });
 });
