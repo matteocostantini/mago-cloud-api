@@ -7,4 +7,6 @@ export class ConnectionInfo {
     public subscriptionKey: string;
     public jwtToken: string = null;
     public rootURL: string = "release-v112.mago.cloud";
+    public ui_culture: string;
+    public culture: string;
 }

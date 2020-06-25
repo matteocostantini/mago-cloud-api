@@ -24,6 +24,25 @@ export class ConnectionService {
     return `https://${this.current.rootURL}/be/${path}`;
   }
 
+  getConnectionHeaders() {
+    var today = new Date();
+    return new HttpHeaders()
+      .set("Authorization", JSON.stringify({
+        Type:"JWT",
+        SecurityValue: this.current.jwtToken
+      }))
+      .set("Server-Info", JSON.stringify({
+        subscription: this.current.subscriptionKey,
+        ui_culture: this.current.ui_culture,
+        culture: this.current.culture,
+        date : {
+          day: today.getDate(),
+          month: today.getMonth(),
+          year: today.getFullYear()
+        }
+      }));
+  }
+
   login(): Observable<Object> {
     var $login = new Observable<Object> ( observer => {
       var loginRequest = {
@@ -36,6 +55,8 @@ export class ConnectionService {
       this.http.post(this.composeURL("account-manager/login"), loginRequest).subscribe((data:LoginResponse) => {
         localStorage.setItem(CONNECTION_INFO_TAG, JSON.stringify(this.current));
         this.current.jwtToken = data.JwtToken;
+        this.current.ui_culture = data.Language;
+        this.current.culture = data.RegionalSettings;
         observer.next();
         observer.complete();        
       });
