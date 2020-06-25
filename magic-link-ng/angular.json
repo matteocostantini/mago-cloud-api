@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "magic-link": {
+    "magic-link-ng": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/magic-link",
+            "outputPath": "dist/magic-link-ng",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -63,18 +63,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "magic-link:build"
+            "browserTarget": "magic-link-ng:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "magic-link:build:production"
+              "browserTarget": "magic-link-ng:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "magic-link:build"
+            "browserTarget": "magic-link-ng:build"
           }
         },
         "test": {
@@ -111,15 +111,15 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "magic-link:serve"
+            "devServerTarget": "magic-link-ng:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "magic-link:serve:production"
+              "devServerTarget": "magic-link-ng:serve:production"
             }
           }
         }
       }
     }},
-  "defaultProject": "magic-link"
+  "defaultProject": "magic-link-ng"
 }
