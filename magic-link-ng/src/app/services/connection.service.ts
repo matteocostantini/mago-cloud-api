@@ -21,7 +21,11 @@ export class ConnectionService {
   }
 
   composeURL(path: string): string {
-    return `https://${this.current.rootURL}/be/${path}`;
+    if (this.current.isDebugEnv) {
+      return `http://${this.current.rootURL}/${path}`;
+    } else {
+      return `https://${this.current.rootURL}/be/${path}`;
+    }
   }
 
   getConnectionHeaders() {
@@ -74,11 +78,11 @@ export class ConnectionService {
       observer.next();
       observer.complete(); 
       // looks like logoff is not working at the moment
-      // this.http.post(this.composeURL("account-manager/logoff"), { headers }).subscribe((data:any) => {
-      //   this.current.jwtToken = null;
-      //   observer.next();
-      //   observer.complete(); 
-      // });
+      this.http.post(this.composeURL("account-manager/logoff"), { headers }).subscribe((data:any) => {
+        this.current.jwtToken = null;
+        observer.next();
+        observer.complete(); 
+      });
     });
     return $logout;
   }
