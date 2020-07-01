@@ -63,11 +63,3 @@ var magicLink = {
     }
 
 })(magicLink);
-
-/*
-        $.get(`https://api.themoviedb.org/3/movie/${tmdbID}/translations?api_key=${API_KEY}`, data => {
-            var italian = data.translations.find(trans => { return trans.iso_3166_1 == "IT" && trans.iso_639_1 == "it";});
-            overviewCallback (italian ? italian.data.overview : "");
-        })
-
-*/
