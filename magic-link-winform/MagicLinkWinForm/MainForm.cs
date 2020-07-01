@@ -258,7 +258,7 @@ namespace MagicLinkWinForm
                         SecurityValue = AuthenticationToken
                     });
 
-                    msg.RequestUri = new Uri(new Uri(tbxRootURL.Text), "account-manager/logout/");
+                    msg.RequestUri = new Uri(new Uri(tbxRootURL.Text), "account-manager/logoff/");
                     msg.Method = HttpMethod.Post;
                     msg.Headers.TryAddWithoutValidation("Authorization", authorizationData);
                     msg.Headers.TryAddWithoutValidation("Content-Type", "application/json");
@@ -283,7 +283,7 @@ namespace MagicLinkWinForm
                         }
 
                         JObject jResult = JsonConvert.DeserializeObject<JObject>(result);
-                        JToken ok = jResult["success"];
+                        JToken ok = jResult["Result"];
                         bool bOk = ok == null ? false : ok.Value<bool>();
 
                         if (bOk)
