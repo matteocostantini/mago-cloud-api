@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 })
 export class ItemsComponent implements OnInit {
 
+  public columns = [];
   public items = [];
   public filter = "";
 
@@ -34,7 +35,8 @@ export class ItemsComponent implements OnInit {
     if (this.filter != "") {
       params = new HttpParams().set("filter", this.filter);
     }
-    this.http.get(this.connection.composeURL("data-service/getdata/ERP.Items.Dbl.Items/code"), { headers, params }).subscribe( (data:any) => {
+    this.http.get(this.connection.composeURL("data-service/getdata/ERP.Items.Dbl.Items/radar"), { headers, params }).subscribe( (data:any) => {
+      this.columns = data.columns;
       this.items = data.rows;
     },
     (error: any) => {
