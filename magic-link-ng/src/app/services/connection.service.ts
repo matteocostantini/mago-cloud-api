@@ -74,11 +74,7 @@ export class ConnectionService {
         Type:"JWT",
         SecurityValue: this.current.jwtToken
       }));
-      this.current.jwtToken = null;
-      observer.next();
-      observer.complete(); 
-      // looks like logoff is not working at the moment
-      this.http.post(this.composeURL("account-manager/logoff"), { headers }).subscribe((data:any) => {
+      this.http.post(this.composeURL("account-manager/logoff"), { }, { headers: headers }).subscribe((data:any) => {
         this.current.jwtToken = null;
         observer.next();
         observer.complete(); 
