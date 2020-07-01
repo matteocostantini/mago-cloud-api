@@ -1,7 +1,7 @@
 import { LoginResponse } from './../models/login-response';
 import { ConnectionInfo } from './../models/connection';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 const CONNECTION_INFO_TAG = "connectionInfo";
@@ -21,7 +21,11 @@ export class ConnectionService {
   }
 
   composeURL(path: string): string {
-    return `https://${this.current.rootURL}/be/${path}`;
+    if (this.current.isDebugEnv) {
+      return `http://${this.current.rootURL}/${path}`;
+    } else {
+      return `https://${this.current.rootURL}/be/${path}`;
+    }
   }
 
   login(): Observable<Object> {
@@ -45,9 +49,15 @@ export class ConnectionService {
 
   logout(): Observable<Object> {
     var $logout = new Observable<Object> ( observer => {
-      this.current.jwtToken = null;
-      observer.next();
-      observer.complete(); 
+      let headers = new HttpHeaders().set("Authorization", JSON.stringify({
+        Type:"JWT",
+        SecurityValue: this.current.jwtToken
+      }));
+      this.http.post(this.composeURL("account-manager/logoff"), { }, { headers: headers }).subscribe((data:any) => {
+        this.current.jwtToken = null;
+        observer.next();
+        observer.complete(); 
+      });
     });
     return $logout;
   }
