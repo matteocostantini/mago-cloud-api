@@ -9,4 +9,5 @@ export class ConnectionInfo {
     public rootURL: string = "release-v112.mago.cloud";
     public ui_culture: string;
     public culture: string;
+    public isDebugEnv: boolean;
 }

@@ -40,6 +40,7 @@
             this.tbxMessages = new System.Windows.Forms.TextBox();
             this.btnGetContacts = new System.Windows.Forms.Button();
             this.tbxData = new System.Windows.Forms.TextBox();
+            this.btnLogout = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnConnect
@@ -150,12 +151,23 @@
             this.tbxData.Size = new System.Drawing.Size(454, 244);
             this.tbxData.TabIndex = 11;
             // 
+            // btnLogout
+            // 
+            this.btnLogout.Location = new System.Drawing.Point(15, 265);
+            this.btnLogout.Name = "btnLogout";
+            this.btnLogout.Size = new System.Drawing.Size(75, 23);
+            this.btnLogout.TabIndex = 12;
+            this.btnLogout.Text = "Logout";
+            this.btnLogout.UseVisualStyleBackColor = true;
+            this.btnLogout.Click += new System.EventHandler(this.btnLogout_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(800, 309);
+            this.Controls.Add(this.btnLogout);
             this.Controls.Add(this.tbxData);
             this.Controls.Add(this.btnGetContacts);
             this.Controls.Add(this.tbxMessages);
@@ -190,6 +202,7 @@
         private System.Windows.Forms.TextBox tbxMessages;
         private System.Windows.Forms.Button btnGetContacts;
         private System.Windows.Forms.TextBox tbxData;
+        private System.Windows.Forms.Button btnLogout;
     }
 }
 

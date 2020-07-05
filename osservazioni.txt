@@ -1,0 +1,2 @@
+* URL diverse tra debug e produzione, non va bene. Inoltre http vs https, se possibile cambiare
+* occorre trovare un modo per differenziare le chiamate fatte dal nostro FE da quelle fatte da 3e parti

@@ -1,1 +1,0 @@
-qual'è il metodo per fare logout? in account-manager "logoff" sembra associato a nessuna route ed in effetti è l'unico che non risponde
