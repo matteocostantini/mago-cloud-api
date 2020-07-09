@@ -48,7 +48,7 @@ namespace MagicLinkWinForm
                 {
                     AccountName = tbxAccountName.Text,
                     Password = tbxPassword.Text,
-                    AppId = "Mobile",
+                    AppId = "M4",
                     subscriptionkey = tbxSubscription.Text
                 });
 
@@ -113,7 +113,6 @@ namespace MagicLinkWinForm
             var authorizationData = JsonConvert.SerializeObject(new
             {
                 Type = "JWT",
-                AppId = "M4",
                 SecurityValue = AuthenticationToken
             });
 
@@ -254,7 +253,6 @@ namespace MagicLinkWinForm
                     var authorizationData = JsonConvert.SerializeObject(new
                     {
                         Type = "JWT",
-                        AppId = "M4",
                         SecurityValue = AuthenticationToken
                     });
 

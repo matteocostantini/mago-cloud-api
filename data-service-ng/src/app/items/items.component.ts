@@ -35,7 +35,7 @@ export class ItemsComponent implements OnInit {
     if (this.filter != "") {
       params = new HttpParams().set("filter", this.filter);
     }
-    this.http.get(this.connection.composeURL("data-service/getdata/ERP.Items.Dbl.Items/radar"), { headers, params }).subscribe( (data:any) => {
+    this.http.get(this.connection.composeURL("data-service/getdata/ERP.Items.Dbl.Items/default"), { headers, params }).subscribe( (data:any) => {
       this.columns = data.columns;
       this.items = data.rows;
     },

@@ -32,7 +32,7 @@ var magicLink = {
             password:  document.login["password"].value,
             overwrite: false,
             subscriptionKey: document.login["subscriptionKey"].value,
-            appId: "Mobile"
+            appId: "M4"
           }; 
 
         $.ajax({

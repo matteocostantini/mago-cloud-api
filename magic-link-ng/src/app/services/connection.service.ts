@@ -54,7 +54,7 @@ export class ConnectionService {
         password: this.current.password,
         overwrite: false,
         subscriptionKey: this.current.subscriptionKey,
-        appId: "Mobile"
+        appId: "M4"
       };
       this.http.post(this.composeURL("account-manager/login"), loginRequest).subscribe((data:LoginResponse) => {
         localStorage.setItem(CONNECTION_INFO_TAG, JSON.stringify(this.current));
