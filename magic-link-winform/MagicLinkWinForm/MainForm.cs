@@ -119,7 +119,7 @@ namespace MagicLinkWinForm
             Cursor.Current = Cursors.WaitCursor;
             using (var msg = new HttpRequestMessage())
             {
-                
+
                 var server_info = JsonConvert.SerializeObject(new
                 {
                     subscription = tbxSubscription.Text,
@@ -170,7 +170,7 @@ namespace MagicLinkWinForm
 
             using (var msg = new HttpRequestMessage())
             {
-                var xmlParam = 
+                var xmlParam =
                     @"<?xml version='1.0' encoding='utf-8'?>
                     <maxs:Contacts tbNamespace='Document.ERP.Contacts.Documents.Contacts' xTechProfile='DefaultLight' xmlns:maxs='http://www.microarea.it/Schema/2004/Smart/ERP/Contacts/Contacts/Standard/DefaultLight.xsd'>
                         <maxs:Parameters>
@@ -200,7 +200,7 @@ namespace MagicLinkWinForm
                 foreach (var cookie in cookies)
                 {
                     httpClientHandler.CookieContainer.Add(msg.RequestUri, cookie);
-                } 
+                }
                 HttpClient httpClient = new HttpClient(httpClientHandler);
                 using (var response = httpClient.SendAsync(msg).Result)
                 {
@@ -301,6 +301,149 @@ namespace MagicLinkWinForm
             }
 
             AuthenticationToken = "";
+        }
+
+        private void btnPost_Click(object sender, EventArgs e)
+        {
+            if (AuthenticationToken == string.Empty)
+            {
+                MessageBox.Show("not yet connected");
+                return;
+            }
+
+            IEnumerable<Cookie> cookies = null;
+            var authorizationData = JsonConvert.SerializeObject(new
+            {
+                Type = "JWT",
+                SecurityValue = AuthenticationToken
+            });
+
+            Cursor.Current = Cursors.WaitCursor;
+            using (var msg = new HttpRequestMessage())
+            {
+
+                var server_info = JsonConvert.SerializeObject(new
+                {
+                    subscription = tbxSubscription.Text,
+                    gmtOffset = -60,
+                    date = new
+                    {
+                        day = DateTime.Now.Day,
+                        month = DateTime.Now.Month,
+                        year = DateTime.Now.Year
+                    }
+                });
+                msg.RequestUri = new Uri(new Uri(tbxRootURL.Text), "tbserver/api/tb/document/initTBLogin/");
+                msg.Method = HttpMethod.Post;
+                msg.Headers.TryAddWithoutValidation("Authorization", authorizationData);
+                msg.Headers.TryAddWithoutValidation("Content-Type", "application/json");
+                msg.Headers.TryAddWithoutValidation("Server-Info", server_info);
+
+                HttpClientHandler httpClientHandler = new HttpClientHandler();
+                HttpClient httpClient = new HttpClient(httpClientHandler);
+                using (var response = httpClient.SendAsync(msg).Result)
+                {
+                    string result = response.Content.ReadAsStringAsync().Result;
+
+                    if (string.IsNullOrEmpty(result))
+                    {
+                        tbxMessages.Text = "Invalid response";
+                        Cursor.Current = Cursors.Default;
+                        return;
+                    }
+
+                    JObject jResult = JsonConvert.DeserializeObject<JObject>(result);
+                    JToken ok = jResult["success"];
+                    bool bOk = ok == null ? false : ok.Value<bool>();
+
+                    if (bOk)
+                    {
+                        cookies = httpClientHandler.CookieContainer.GetCookies(msg.RequestUri).Cast<Cookie>().ToList();
+                    }
+                    else
+                    {
+                        tbxMessages.Text = "Request failed";
+                        Cursor.Current = Cursors.Default;
+                        return;
+                    }
+
+                }
+            }
+
+            using (var msg = new HttpRequestMessage())
+            {
+                string xmlData = $@"<?xml version='1.0'?>
+                <maxs:Contacts xmlns:maxs='http://www.microarea.it/Schema/2004/Smart/ERP/Contacts/Contacts/Standard/DefaultLight.xsd' tbNamespace = 'Document.ERP.Contacts.Documents.Contacts' xTechProfile = 'DefaultLight' >
+                    <maxs:Data>
+                        <maxs:Contacts master='true'>
+                            <maxs:CompanyName>{txtCompanyName.Text}</maxs:CompanyName>
+                            <maxs:Address>{txtAddress.Text}</maxs:Address>
+                            <maxs:Telephone1>{txtPhone.Text}</maxs:Telephone1>
+                            <maxs:ContactPerson>{txtContactName.Text}</maxs:ContactPerson>
+                        </maxs:Contacts>
+                    </maxs:Data>
+                </maxs:Contacts> ";
+
+                var functionParams = JsonConvert.SerializeObject(new
+                {
+                    ns = "Extensions.XEngine.TBXmlTransfer.SetDataRest",
+                    args = new
+                    {
+                        data = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(xmlData)),
+                        saveAction = 0, // insert or update
+                        loginName = tbxAccountName.Text,
+                        result = "data"
+                    }
+                });
+
+                msg.RequestUri = new Uri(new Uri(tbxRootURL.Text), "tbserver/api/tb/document/runRestFunction/");
+                msg.Method = HttpMethod.Post;
+                msg.Content = new StringContent(content: functionParams, encoding: Encoding.UTF8, mediaType: "application/json");
+                msg.Headers.TryAddWithoutValidation("Authorization", authorizationData);
+                msg.Headers.TryAddWithoutValidation("Content-Type", "application/json");
+
+                HttpClientHandler httpClientHandler = new HttpClientHandler();
+                httpClientHandler.CookieContainer = new CookieContainer();
+                foreach (var cookie in cookies)
+                {
+                    httpClientHandler.CookieContainer.Add(msg.RequestUri, cookie);
+                }
+                HttpClient httpClient = new HttpClient(httpClientHandler);
+                using (var response = httpClient.SendAsync(msg).Result)
+                {
+                    string result = response.Content.ReadAsStringAsync().Result;
+
+                    if (string.IsNullOrEmpty(result))
+                    {
+                        tbxMessages.Text = "Invalid response";
+                        Cursor.Current = Cursors.Default;
+                        return;
+                    }
+
+                    JObject jResult = JsonConvert.DeserializeObject<JObject>(result);
+                    JToken ok = jResult["retVal"];
+                    bool bOk = ok == null ? false : ok.Value<bool>();
+                    if (bOk)
+                    {
+                        if (jResult["result"] != null)
+                        {
+                            tbxResponse.Text = Encoding.UTF8.GetString(System.Convert.FromBase64String(jResult["result"].ToString()));
+                        }
+                        if (jResult["message"] != null)
+                        {
+                            string responseMsg = jResult["message"]?.ToString();
+                            MessageBox.Show(responseMsg);
+                        }
+                    }
+                    else
+                    {
+                        tbxMessages.Text = "Request failed";
+                        Cursor.Current = Cursors.Default;
+                        return;
+                    }
+                }
+            }
+            Cursor.Current = Cursors.Default;
         }
     }
 }
