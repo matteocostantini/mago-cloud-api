@@ -1,11 +1,12 @@
 namespace magic_link_ng_dotnet.Models
 {
-    public class LoginRequest {
+    public class ConnectionRequest {
+        public string rootURL {get; set;}
+        public bool isDebugEnv {get; set;}
+
         public string accountName {get; set;}
         public string password {get; set;}
-        public string overwrite {get; set;}
         public string subscriptionKey {get; set;}
-        public string appId {get; set;}
     }
 
     public class LoginResponse {

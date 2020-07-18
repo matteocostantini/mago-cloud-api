@@ -1,6 +1,6 @@
-import { LoginResponse } from './../models/login-response';
+import { LoginResponse, ConnectionRequest } from '../models/login';
 import { ConnectionInfo } from './../models/connection';
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -12,7 +12,7 @@ const CONNECTION_INFO_TAG = "connectionInfo";
 export class ConnectionService {
   public current: ConnectionInfo;
 
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) { 
     this.current = JSON.parse(localStorage.getItem(CONNECTION_INFO_TAG));
     if (!this.current) 
       this.current = new ConnectionInfo();
@@ -49,18 +49,18 @@ export class ConnectionService {
 
   login(): Observable<Object> {
     var $login = new Observable<Object> ( observer => {
-      var loginRequest = {
+      var connectionRequest: ConnectionRequest = {
+        rootURL: this.current.rootURL,
+        isDebugEnv: this.current.isDebugEnv,
         accountName: this.current.accountName,
         password: this.current.password,
-        overwrite: false,
-        subscriptionKey: this.current.subscriptionKey,
-        appId: "M4"
+        subscriptionKey: this.current.subscriptionKey
       };
-      this.http.post(this.composeURL("account-manager/login"), loginRequest).subscribe((data:LoginResponse) => {
+      this.http.post(this.baseUrl + "connection/login", connectionRequest).subscribe((data:LoginResponse) => {
         localStorage.setItem(CONNECTION_INFO_TAG, JSON.stringify(this.current));
-        this.current.jwtToken = data.JwtToken;
-        this.current.ui_culture = data.Language;
-        this.current.culture = data.RegionalSettings;
+        this.current.jwtToken = data.jwtToken;
+        this.current.ui_culture = data.language;
+        this.current.culture = data.regionalSettings;
         observer.next();
         observer.complete();        
       });
@@ -70,15 +70,15 @@ export class ConnectionService {
 
   logout(): Observable<Object> {
     var $logout = new Observable<Object> ( observer => {
-      let headers = new HttpHeaders().set("Authorization", JSON.stringify({
-        Type:"JWT",
-        SecurityValue: this.current.jwtToken
-      }));
-      this.http.post(this.composeURL("account-manager/logoff"), { }, { headers: headers }).subscribe((data:any) => {
-        this.current.jwtToken = null;
+      // let headers = new HttpHeaders().set("Authorization", JSON.stringify({
+      //   Type:"JWT",
+      //   SecurityValue: this.current.jwtToken
+      // }));
+      // this.http.post(this.composeURL("account-manager/logoff"), { }, { headers: headers }).subscribe((data:any) => {
+      //   this.current.jwtToken = null;
         observer.next();
         observer.complete(); 
-      });
+    //   });
     });
     return $logout;
   }
