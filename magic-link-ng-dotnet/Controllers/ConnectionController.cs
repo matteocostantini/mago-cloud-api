@@ -27,7 +27,6 @@ namespace magic_link_ng_dotnet.Controllers
             }
         }
 
-
         [HttpPost("login")]
         public async Task<ActionResult<LoginResponse>> Login([FromBody] ConnectionRequest connectionRequest)
         {
@@ -42,12 +41,36 @@ namespace magic_link_ng_dotnet.Controllers
                 subscriptionkey = connectionRequest.subscriptionKey
             });
 
-            var response = await httpClient.PostAsync(composeURL("account-manager/login"), new StringContent(loginData, System.Text.Encoding.UTF8, "application/json"));
-            string result = response.Content.ReadAsStringAsync().Result;
-            JObject jResult = JsonConvert.DeserializeObject<JObject>(result);
-            return new LoginResponse {
-                JwtToken = jResult["JwtToken"]?.ToString()
-            };
+            try
+            {
+                var response = await httpClient.PostAsync(composeURL("account-manager/login"), new StringContent(loginData, System.Text.Encoding.UTF8, "application/json"));
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new ContentResult {
+                        StatusCode = (int)response.StatusCode,
+                        Content = $"Error on login: {response.ReasonPhrase}"
+                    };
+                }
+
+                string result = response.Content.ReadAsStringAsync().Result;
+                if (string.IsNullOrEmpty(result))
+                {
+                    return new ContentResult {
+                        StatusCode = 500,
+                        Content = "Invalid login"
+                    };
+                }
+
+                var loginResponse = JsonConvert.DeserializeObject<LoginResponse>(result);
+                return loginResponse;
+            }
+            catch (System.Exception e)
+            {
+                return new ContentResult {
+                    StatusCode = 500,
+                    Content = e.Message
+                };
+            }
         }
 
         [HttpGet("hello")]

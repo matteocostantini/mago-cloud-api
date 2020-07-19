@@ -63,6 +63,9 @@ export class ConnectionService {
         this.current.culture = data.regionalSettings;
         observer.next();
         observer.complete();        
+      },
+      (error) => {
+        observer.error(`${error.status} - ${error.error} - ${error.message}`);
       });
     }) 
     return $login;
