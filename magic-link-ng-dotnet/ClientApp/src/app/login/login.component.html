@@ -26,12 +26,6 @@
                 <button (click)="onCancel()" class="btn btn-secondary ml-2">Annulla</button>
             </div>   
         </form>
-        <div *ngIf="alertMessage" class="alert alert-danger alert-dismissible" role="alert">
-            {{alertMessage}}
-            <button type="button" class="close" data-dismiss="alert" (click)="alertMessage = null" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
     </div>
     <div *ngIf="connection.current.jwtToken">
         <div class="row">
@@ -43,5 +37,11 @@
                 <button (click)="onLogout()" class="btn btn-primary">Logout</button>
             </div>   
         </div>
+    </div>
+    <div *ngIf="alertMessage" class="alert alert-danger alert-dismissible" role="alert">
+        {{alertMessage}}
+        <button type="button" class="close" data-dismiss="alert" (click)="alertMessage = null" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
 </div>

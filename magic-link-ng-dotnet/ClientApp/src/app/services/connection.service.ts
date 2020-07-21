@@ -1,5 +1,4 @@
-import { LoginResponse, ConnectionRequest } from '../models/login';
-import { ConnectionInfo } from './../models/connection';
+import { LoginResponse, ConnectionRequest, ConnectionInfo } from './../models/connection';
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -72,16 +71,21 @@ export class ConnectionService {
   }
 
   logout(): Observable<Object> {
+    var logoutRequest = {
+      rootURL: this.current.rootURL,
+      isDebugEnv: this.current.isDebugEnv,
+      jwtToken : this.current.jwtToken
+    };
+
     var $logout = new Observable<Object> ( observer => {
-      // let headers = new HttpHeaders().set("Authorization", JSON.stringify({
-      //   Type:"JWT",
-      //   SecurityValue: this.current.jwtToken
-      // }));
-      // this.http.post(this.composeURL("account-manager/logoff"), { }, { headers: headers }).subscribe((data:any) => {
-      //   this.current.jwtToken = null;
+      this.http.post(this.baseUrl + "connection/logout", logoutRequest).subscribe((data:any) => {
+        this.current.jwtToken = null;
         observer.next();
         observer.complete(); 
-    //   });
+      },
+      (error) => {
+        observer.error(`${error.status} - ${error.error} - ${error.message}`);
+      });
     });
     return $logout;
   }

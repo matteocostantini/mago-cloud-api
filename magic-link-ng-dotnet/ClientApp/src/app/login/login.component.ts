@@ -30,6 +30,9 @@ export class LoginComponent implements OnInit {
   onLogout() {
     this.connection.logout().subscribe(() => {
 
+    },
+    (error) => {
+      this.alertMessage = error;
     });
   }
 }

@@ -12,27 +12,22 @@ namespace magic_link_ng_dotnet.Controllers
     public class ConnectionController : ControllerBase
     {
         private HttpClient httpClient = new HttpClient();
-        private string rootURL;
-        private bool isDebugEnv;
 
-        private string composeURL(string path) 
+        private string composeURL(string path, bool isDebugEnv, string rootURL) 
         {
-            if (this.isDebugEnv) 
+            if (isDebugEnv) 
             {
-                return $"http://{this.rootURL}/{path}";
+                return $"http://{rootURL}/{path}";
             } 
             else 
             {
-                return $"https://{this.rootURL}/be/{path}";
+                return $"https://{rootURL}/be/{path}";
             }
         }
 
         [HttpPost("login")]
         public async Task<ActionResult<LoginResponse>> Login([FromBody] ConnectionRequest connectionRequest)
         {
-            rootURL = connectionRequest.rootURL;
-            isDebugEnv = connectionRequest.isDebugEnv;
-
             var loginData = JsonConvert.SerializeObject(new
             {
                 AccountName = connectionRequest.accountName,
@@ -43,7 +38,10 @@ namespace magic_link_ng_dotnet.Controllers
 
             try
             {
-                var response = await httpClient.PostAsync(composeURL("account-manager/login"), new StringContent(loginData, System.Text.Encoding.UTF8, "application/json"));
+                var response = await httpClient.PostAsync(
+                    composeURL("account-manager/login", connectionRequest.isDebugEnv, connectionRequest.rootURL), 
+                    new StringContent(loginData, System.Text.Encoding.UTF8, "application/json")
+                );
                 if (!response.IsSuccessStatusCode)
                 {
                     return new ContentResult {
@@ -73,10 +71,38 @@ namespace magic_link_ng_dotnet.Controllers
             }
         }
 
-        [HttpGet("hello")]
-        public ActionResult<string> Hello()
+        [HttpPost("logout")]
+        public async Task<ActionResult<bool>> Logout([FromBody] LogoutRequest request)
         {
-            return "hello";
+            var authorizationData = JsonConvert.SerializeObject(new
+            {
+                Type = "JWT",
+                SecurityValue = request.JwtToken
+            });
+            try
+            {
+                HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, composeURL("account-manager/logoff", request.isDebugEnv, request.rootURL));
+                msg.Headers.TryAddWithoutValidation("Authorization", authorizationData);
+                msg.Headers.TryAddWithoutValidation("Content-Type", "application/json");
+                var response = await httpClient.SendAsync(msg);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new ContentResult {
+                        StatusCode = (int)response.StatusCode,
+                        Content = $"Error on logout: {response.ReasonPhrase}"
+                    };
+                }
+
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                return new ContentResult {
+                    StatusCode = 500,
+                    Content = e.Message
+                };
+            }
         }
     }
 }

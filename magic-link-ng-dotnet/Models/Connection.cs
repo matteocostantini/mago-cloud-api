@@ -9,6 +9,12 @@ namespace magic_link_ng_dotnet.Models
         public string subscriptionKey {get; set;}
     }
 
+    public class LogoutRequest {
+        public string rootURL {get; set;}
+        public bool isDebugEnv {get; set;}
+        public string JwtToken {get; set;}
+    }
+
     public class LoginResponse {
         public string JwtToken {get; set;}
         public string Language {get; set;}
@@ -21,4 +27,6 @@ namespace magic_link_ng_dotnet.Models
         public string SubscriptionDesc {get; set;}
         public string SubscriptionCountry {get; set;}
     }
+
+
 }
